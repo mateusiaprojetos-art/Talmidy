@@ -1,0 +1,6 @@
+{
+  "name": "Talmidim Academy",
+  "description": "Academia Digital de Estudos das Escrituras - Tora, Pardes, Parasha, Shabat, Hebraico, Brit Hadasha",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

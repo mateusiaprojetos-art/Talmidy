@@ -1,0 +1,83 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isSuperAdmin() {
+      return isAuthenticated() && (
+        request.auth.token.email == 'mateus.iaprojetos@gmail.com' ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'SUPER_ADMIN')
+      );
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (
+        request.auth.token.email == 'mateus.iaprojetos@gmail.com' ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'ADMIN' ||
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'SUPER_ADMIN'))
+      );
+    }
+
+    function isEditor() {
+      return isAuthenticated() && (
+        request.auth.token.email == 'mateus.iaprojetos@gmail.com' ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['EDITOR', 'ADMIN', 'SUPER_ADMIN']))
+      );
+    }
+
+    // User profiles - owners can read/write their own profile except non-superadmins cannot modify role field to ADMIN or SUPER_ADMIN
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isAuthenticated();
+      allow update: if isOwner(userId) || isAdmin();
+      allow delete: if isSuperAdmin();
+    }
+
+    // User personal notes
+    match /notes/{noteId} {
+      allow read, write: if isAuthenticated() && (resource == null || resource.data.userId == request.auth.uid) && (request.resource == null || request.resource.data.userId == request.auth.uid);
+      allow read, write: if isAdmin();
+    }
+
+    // User saved studies
+    match /studies/{studyId} {
+      allow read, write: if isAuthenticated() && (resource == null || resource.data.userId == request.auth.uid) && (request.resource == null || request.resource.data.userId == request.auth.uid);
+      allow read, write: if isAdmin();
+    }
+
+    // Admin audit logs - strictly writable by admins, readable by admins
+    match /audit_logs/{logId} {
+      allow read, write: if isAdmin();
+    }
+
+    // Content Items (Tora, Neviim, Ketuvim, Brit Hadasha)
+    match /content_items/{itemId} {
+      allow read: if true;
+      allow write: if isEditor();
+    }
+
+    // Site configuration
+    match /site_config/{configId} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
+    // Campaigns & Notifications
+    match /email_campaigns/{campaignId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /push_notifications/{notifId} {
+      allow read, write: if isAdmin();
+    }
+  }
+}

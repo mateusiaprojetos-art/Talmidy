@@ -1,0 +1,56 @@
+{
+  "entities": {
+    "users": {
+      "title": "User",
+      "description": "User profile and learning progress metrics",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "studyMinutes": { "type": "number" },
+        "learnedWords": { "type": "array", "items": { "type": "string" } },
+        "completedLessons": { "type": "array", "items": { "type": "string" } },
+        "streakDays": { "type": "number" },
+        "lastStudyDate": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["uid", "email"]
+    },
+    "notes": {
+      "title": "Note",
+      "description": "User notes and study logs",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "reference": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["userId", "title", "content"]
+    },
+    "studies": {
+      "title": "Study Material",
+      "description": "AI-generated saved studies and presentation slides",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "topic": { "type": "string" },
+        "mode": { "type": "string" },
+        "targetAudience": { "type": "string" },
+        "depthLevel": { "type": "string" },
+        "contentMarkdown": { "type": "string" },
+        "slides": { "type": "array" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["userId", "title", "topic"]
+    }
+  }
+}

@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-calibri: 'Calibri', 'Segoe UI', Candara, Optima, Arial, sans-serif;
+    --font-hebrew: 'Frank Ruhl Libre', 'Noto Serif Hebrew', 'David', 'Arial', sans-serif;
+  }
+  
+  html, body {
+    font-family: var(--font-calibri);
+    transition: background-color 0.2s ease, color 0.2s ease;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html.dark, body.dark {
+    background-color: #34344e;
+    color: #cbdad5;
+  }
+
+  html.light, body.light {
+    background-color: #cbdad5;
+    color: #34344e;
+  }
+}
+
+/* Hebrew Font & RTL Direction Utilities */
+.font-hebrew {
+  font-family: 'Frank Ruhl Libre', 'Noto Serif Hebrew', 'David', 'Arial', sans-serif !important;
+  direction: rtl;
+  text-align: right;
+  unicode-bidi: isolate;
+}
+
+/* Custom scrollbar matching palette */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #566981;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #89a7b1;
+}
+
